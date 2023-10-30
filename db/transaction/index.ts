@@ -29,7 +29,7 @@ const getUserTransactions = async ({
     .get()
 }
 
-const getLastMonthExpense = async (): Promise<number> => {
+const getLastMonthExpense = async (): Promise<number | undefined> => {
   const data = (await transactions).ref
     .collection('transactions')
     .where('date', '>', moment().subtract(1, 'month').startOf('month').toDate())
@@ -37,6 +37,9 @@ const getLastMonthExpense = async (): Promise<number> => {
     .get()
     .then((res) => {
       const finalData: TransactionType[] = []
+      if (!res.docs.length) {
+        return undefined
+      }
       res.forEach((v) => {
         finalData.push(v.data() as TransactionType)
       })
