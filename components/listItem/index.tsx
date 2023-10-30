@@ -5,10 +5,13 @@ import { FlatList } from 'react-native-gesture-handler'
 import moment from 'moment'
 import { TransactionType } from '../../types/transactionType'
 
-const ItemList: React.FC<{ data: TransactionType[] }> = ({ data }) => {
+const ItemList: React.FC<{
+  data: TransactionType[]
+  limit?: number
+}> = ({ data, limit }) => {
   return (
     <FlatList
-      data={data}
+      data={data.slice(0, limit)}
       renderItem={({ index, item }) => (
         <View
           key={index}
