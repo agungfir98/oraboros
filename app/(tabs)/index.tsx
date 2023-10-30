@@ -27,7 +27,7 @@ export default function Index() {
     orderBy: 'desc',
   })
   const [lastMonthExpense, setLastMonthExpense] = useState<number>(0)
-  const [percentExpenses, setPercentExpenses] = useState<number>(0)
+  const [percentExpenses, setPercentExpenses] = useState<number | undefined>()
 
   useEffect(() => {
     db.transaction.getUserTransactions(queryParams).then((transaction) => {
@@ -46,17 +46,19 @@ export default function Index() {
 
   useEffect(() => {
     db.transaction.getLastMonthExpense().then((value) => {
-      setLastMonthExpense(value)
+      if (value) setLastMonthExpense(value)
     })
   }, [])
 
   useEffect(() => {
-    const percent =
-      (transactionHistory.reduce((pv, cv) => pv + cv.price, 0) /
-        lastMonthExpense -
-        1) *
-      100
-    setPercentExpenses(parseFloat(percent.toFixed(2)))
+    if (lastMonthExpense) {
+      const percent =
+        (transactionHistory.reduce((pv, cv) => pv + cv.price, 0) /
+          lastMonthExpense -
+          1) *
+        100
+      setPercentExpenses(parseFloat(percent.toFixed(2)))
+    }
   }, [lastMonthExpense])
 
   return (
@@ -70,23 +72,27 @@ export default function Index() {
             .reduce((pv, cv) => pv + cv.price, 0)
             .toLocaleString()}
         </Text>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: 4,
-          }}
-        >
-          <FontAwesome
-            name={percentExpenses > 0 ? 'arrow-circle-up' : 'arrow-circle-down'}
-            color={'white'}
-          />
-          <Text style={{ color: 'white' }}>
-            {percentExpenses}% {percentExpenses > 0 ? 'more' : 'less'} than last
-            month
-          </Text>
-        </View>
+        {percentExpenses && (
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: 4,
+            }}
+          >
+            <FontAwesome
+              name={
+                percentExpenses > 0 ? 'arrow-circle-up' : 'arrow-circle-down'
+              }
+              color={'white'}
+            />
+            <Text style={{ color: 'white' }}>
+              {percentExpenses}% {percentExpenses > 0 ? 'more' : 'less'} than
+              last month
+            </Text>
+          </View>
+        )}
       </View>
       <View style={styles.mainContent}>
         <View style={styles.budgetCard}>
