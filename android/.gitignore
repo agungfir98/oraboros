@@ -2,6 +2,9 @@
 #
 .DS_Store
 
+
+app/google-services.json
+
 # Android/IntelliJ
 #
 build/
