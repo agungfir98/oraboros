@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import db from '../../db'
 import { TransactionType } from '../../types/transactionType'
 import moment from 'moment'
+import { TransactionQueryParams } from '../../db/transaction'
 
 interface TransactionFirestoreType extends TransactionType {
   date: { nanoseconds: number; seconds: number }
@@ -17,9 +18,19 @@ export default function Index() {
   const [transactionHistory, setTransactionHistory] = useState<
     TransactionType[]
   >([])
+  const [queryParams] = useState<TransactionQueryParams>({
+    dateRange: {
+      start: moment().startOf('month').toDate(),
+      end: moment().endOf('month').toDate(),
+    },
+    limit: 8,
+    orderBy: 'desc',
+  })
+  const [lastMonthExpense, setLastMonthExpense] = useState<number>(0)
+  const [percentExpenses, setPercentExpenses] = useState<number>(0)
 
   useEffect(() => {
-    db.transaction.getUserTransactions().then((transaction) => {
+    db.transaction.getUserTransactions(queryParams).then((transaction) => {
       const finalData: TransactionType[] = []
       transaction.forEach((value) => {
         const data = value.data() as TransactionFirestoreType
@@ -34,15 +45,31 @@ export default function Index() {
   }, [])
 
   useEffect(() => {
-    console.log(transactionHistory)
-  }, [transactionHistory])
+    db.transaction.getLastMonthExpense().then((value) => {
+      setLastMonthExpense(value)
+    })
+  }, [])
+
+  useEffect(() => {
+    const percent =
+      (transactionHistory.reduce((pv, cv) => pv + cv.price, 0) /
+        lastMonthExpense -
+        1) *
+      100
+    setPercentExpenses(parseFloat(percent.toFixed(2)))
+  }, [lastMonthExpense])
 
   return (
     <View style={[styles.container]}>
       <SafeAreaView />
       <View style={styles.header}>
-        <Text style={styles.headerText}>This month spend</Text>
-        <Text style={styles.mainHeaderText}>Rp. xxxxxxxxx</Text>
+        <Text style={styles.headerText}>This month's spend</Text>
+        <Text style={styles.mainHeaderText}>
+          Rp.{' '}
+          {transactionHistory
+            .reduce((pv, cv) => pv + cv.price, 0)
+            .toLocaleString()}
+        </Text>
         <View
           style={{
             flexDirection: 'row',
@@ -51,8 +78,14 @@ export default function Index() {
             gap: 4,
           }}
         >
-          <FontAwesome name="arrow-circle-down" color={'white'} />
-          <Text style={{ color: 'white' }}>xx% less than last month</Text>
+          <FontAwesome
+            name={percentExpenses > 0 ? 'arrow-circle-up' : 'arrow-circle-down'}
+            color={'white'}
+          />
+          <Text style={{ color: 'white' }}>
+            {percentExpenses}% {percentExpenses > 0 ? 'more' : 'less'} than last
+            month
+          </Text>
         </View>
       </View>
       <View style={styles.mainContent}>
@@ -65,7 +98,7 @@ export default function Index() {
             style={{ flexDirection: 'row', justifyContent: 'space-between' }}
           >
             <Text style={{ fontWeight: '500', color: Colors.mute }}>
-              Recent transaction
+              Recent monthly transaction
             </Text>
             <Link
               href={'/profile'}
@@ -88,6 +121,7 @@ const styles = StyleSheet.create({
   },
   header: {
     height: '30%',
+    gap: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
