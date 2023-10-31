@@ -8,7 +8,7 @@ import {
   View,
   KeyboardAvoidingView,
 } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import Colors from '../../constants/Colors'
 import RNPickerSelect from 'react-native-picker-select'
 import RNDatePicker from 'react-native-date-picker'
@@ -25,7 +25,7 @@ const NewTransaction = () => {
   const qtyRef = useRef<TextInput>(null)
 
   NetInfo.addEventListener((state) => {
-    console.log(state.isConnected)
+    console.log('internet aman? ', state.isConnected)
   })
 
   const [loading, setLoading] = useState<boolean>(false)
@@ -162,12 +162,11 @@ const NewTransaction = () => {
                 mode="datetime"
                 locale="id"
                 open={openDatePicker}
-                date={formData.date}
+                date={formData.date as Date}
                 androidVariant="nativeAndroid"
                 onCancel={() => setOpenDetPicker(false)}
                 onConfirm={(value) => {
                   setOpenDetPicker(false)
-                  console.log(typeof value)
                   setFormData((prev) => ({
                     ...prev,
                     date: moment(value).toDate(),

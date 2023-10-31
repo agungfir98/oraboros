@@ -4,29 +4,24 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import {
   GoogleSignin,
   GoogleSigninButton,
-  User,
 } from '@react-native-google-signin/google-signin'
 import { useSession } from '../utils/authctx'
+import { useConnectionContext } from '../utils/connectionProvider'
 
 const SignIn = () => {
   const { signIn } = useSession()
+  const { isConnected } = useConnectionContext()
 
-  const { loading, signInFn } = signIn
+  const { loading, setLoading, signInFn } = signIn
 
   GoogleSignin.configure({
     offlineAccess: false,
   })
 
   useEffect(() => {
-    const anu = setInterval(async () => {
-      const status = await GoogleSignin.isSignedIn()
-      console.log(status)
-    }, 60000)
-
-    return () => {
-      clearInterval(anu)
-    }
-  }, [])
+    if (!isConnected) setLoading(true)
+    if (isConnected) setLoading(false)
+  }, [isConnected])
 
   return (
     <View style={{ flex: 1 }}>

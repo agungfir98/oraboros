@@ -6,14 +6,17 @@ import { GoogleSignin, User } from '@react-native-google-signin/google-signin'
 const getUser = async (): Promise<
   FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>
 > => {
-  const user: User | null = await GoogleSignin.getCurrentUser().then(
-    (res) => res,
-  )
-
-  return await firestore()
-    .collection('Users')
-    .where('id', '==', user?.user.id)
-    .get()
+  return GoogleSignin.getCurrentUser().then((user) => {
+    console.log('userrrrrrr ')
+    if (user !== null) {
+      return firestore()
+        .collection('Users')
+        .where('id', '==', user.user.id)
+        .get()
+    }
+  }) as Promise<
+    FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>
+  >
 }
 
 const createUser = async (

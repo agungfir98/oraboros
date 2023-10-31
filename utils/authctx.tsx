@@ -10,7 +10,11 @@ import db from '../db'
 import { Alert } from 'react-native'
 
 const AuthContext = createContext<{
-  signIn: { loading: boolean; signInFn: () => void }
+  signIn: {
+    loading: boolean
+    setLoading: (arg: boolean) => void
+    signInFn: () => void
+  }
   signOut: () => void
   getCurrentUser: () => Promise<User | null>
 } | null>(null)
@@ -29,27 +33,31 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signIn = {
     loading: signInLoading,
+    setLoading: (arg: boolean) => setSignInLoading(arg),
     signInFn: async () => {
       setSignInLoading(true)
-      try {
-        await GoogleSignin.hasPlayServices()
-        const userInfo = await GoogleSignin.signIn()
+      await GoogleSignin.hasPlayServices()
 
-        const getUser = await db.user.getUser()
-
-        if (!getUser.docs.length) {
-          await db.user.createUser(userInfo.user)
-        }
-        setSignInLoading(false)
-        router.replace('/(tabs)')
-        return userInfo
-      } catch (error) {
-        console.error(error)
-        const err = error as AuthError
-        if (err.code === statusCodes.SIGN_IN_CANCELLED) {
+      return GoogleSignin.signIn()
+        .then((user) => {
+          return db.user.getUser().then((snapshot) => {
+            if (!snapshot.docs.length) {
+              return db.user.createUser(user.user)
+            }
+          })
+        })
+        .then(() => {
           setSignInLoading(false)
-        }
-      }
+          router.replace('/(tabs)')
+          return
+        })
+        .catch((err) => {
+          const error = err as AuthError
+          if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+            setSignInLoading(false)
+          }
+          setSignInLoading(false)
+        })
     },
   }
 
@@ -68,9 +76,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
             [
               {
                 text: 'Sign me out',
-                onPress(value) {
+                onPress() {
                   GoogleSignin.signOut().then((res) => {
-                    console.log('auth provider context signout', res)
                     router.replace('/signin')
                     return res
                   })
