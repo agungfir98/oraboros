@@ -2,9 +2,6 @@
 
 %ProgramData%/
 
-#google services
-google-services.json
-
 # dependencies
 node_modules/
 

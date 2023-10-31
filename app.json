@@ -12,7 +12,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#141639"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -36,6 +38,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "1e0c3674-f17f-40f2-8513-f66bb8636b9b"
+      }
     }
   }
 }

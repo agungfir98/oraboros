@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "458130435107",
+    "project_id": "oraboros-b7a9a",
+    "storage_bucket": "oraboros-b7a9a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:458130435107:android:704149a9b9a0ee12f55596",
+        "android_client_info": {
+          "package_name": "com.agungdev.oraboros"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "458130435107-rjprvi1qk7o06098dje5c81flqslcpr0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.agungdev.oraboros",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "458130435107-2pf614c292o7qlbt0dvr3io2i9li9tjg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTMB45EU-Rq5VnHGwLe_-_3-A7Y_zVz1M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "458130435107-2pf614c292o7qlbt0dvr3io2i9li9tjg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
