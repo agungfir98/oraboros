@@ -30,24 +30,34 @@ export default function Index() {
   const [percentExpenses, setPercentExpenses] = useState<number | undefined>()
 
   useEffect(() => {
-    db.transaction.getUserTransactions(queryParams).then((transaction) => {
-      const finalData: TransactionType[] = []
-      transaction.forEach((value) => {
-        const data = value.data() as TransactionFirestoreType
-        finalData.push({
-          ...data,
-          date: moment(data.date.seconds * 1000).toDate(),
-        } as TransactionType)
-      })
+    db.transaction
+      .getUserTransactions(queryParams)
+      .then((transaction) => {
+        const finalData: TransactionType[] = []
+        transaction.forEach((value) => {
+          const data = value.data() as TransactionFirestoreType
+          finalData.push({
+            ...data,
+            date: moment(data.date.seconds * 1000).toDate(),
+          } as TransactionType)
+        })
 
-      setTransactionHistory(finalData)
-    })
+        setTransactionHistory(finalData)
+      })
+      .catch(() => {
+        return
+      })
   }, [])
 
   useEffect(() => {
-    db.transaction.getLastMonthExpense().then((value) => {
-      if (value) setLastMonthExpense(value)
-    })
+    db.transaction
+      .getLastMonthExpense()
+      .then((value) => {
+        if (value) setLastMonthExpense(value)
+      })
+      .catch(() => {
+        return
+      })
   }, [])
 
   useEffect(() => {
