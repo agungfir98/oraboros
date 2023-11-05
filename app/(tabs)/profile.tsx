@@ -32,7 +32,7 @@ export default function TabOneScreen() {
 
   useEffect(() => {
     getCurrentUser().then((user) => {
-      console.log(user)
+      setUser(user)
     })
   }, [])
 
@@ -52,11 +52,13 @@ export default function TabOneScreen() {
             width={40}
             height={40}
             source={{
-              uri: 'https://lh3.googleusercontent.com/a/ACg8ocKb8b5rYNOwyTl2fTWk187Le5QmUH8RLcQJc4DnIlZgNw',
+              uri: user?.user.photo
+                ? user.user.photo
+                : 'https://lh3.googleusercontent.com/a/ACg8ocKb8b5rYNOwyTl2fTWk187Le5QmUH8RLcQJc4DnIlZgNw',
             }}
           />
           <Text style={{ fontSize: 20, fontWeight: '700', color: 'white' }}>
-            Agung Firmansyah
+            {user ? user.user.name : ''}
           </Text>
         </View>
       </View>
