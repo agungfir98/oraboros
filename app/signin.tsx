@@ -1,10 +1,7 @@
 import { StyleSheet, View, Text } from 'react-native'
 import React, { useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import {
-  GoogleSignin,
-  GoogleSigninButton,
-} from '@react-native-google-signin/google-signin'
+import { GoogleSigninButton } from '@react-native-google-signin/google-signin'
 import { useSession } from '../utils/authctx'
 import { useConnectionContext } from '../utils/connectionProvider'
 
@@ -13,10 +10,6 @@ const SignIn = () => {
   const { isConnected } = useConnectionContext()
 
   const { loading, setLoading, signInFn } = signIn
-
-  GoogleSignin.configure({
-    offlineAccess: false,
-  })
 
   useEffect(() => {
     if (!isConnected) setLoading(true)
