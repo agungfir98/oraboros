@@ -7,6 +7,9 @@ import { StatusBar, View, Text } from 'react-native'
 import moment from 'moment'
 import ConnectionProvider from '../utils/connectionProvider'
 
+import 'expo-dev-client'
+import { GoogleSignin } from '@react-native-google-signin/google-signin'
+
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -51,6 +54,14 @@ moment.updateLocale('id', {
 })
 function RootLayoutNav() {
   StatusBar.setBarStyle('light-content')
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        '458130435107-2pf614c292o7qlbt0dvr3io2i9li9tjg.apps.googleusercontent.com',
+    })
+  }, [])
+
   return (
     <ConnectionProvider>
       <AuthProvider>
