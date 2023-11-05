@@ -7,9 +7,6 @@ import { useSession } from '../../utils/authctx'
 import { useEffect, useState } from 'react'
 import { User } from '@react-native-google-signin/google-signin'
 import Loading from '../../components/loading'
-import { useConnectionContext } from '../../utils/connectionProvider'
-import { StatusBar } from 'expo-status-bar'
-import NoNetInfoComponent from '../../components/netInfoNotifier'
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -23,28 +20,23 @@ function TabBarIcon(props: {
 
 export default function DashboardLayout() {
   const [user, setUser] = useState<User | null>()
-  const [loading, setLoading] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
 
   const { getCurrentUser } = useSession()
-  const { isConnected } = useConnectionContext()
 
   useEffect(() => {
+    setLoading(true)
     getCurrentUser().then((userInfo) => {
       if (!userInfo) {
         setUser(null)
+        setLoading(false)
+        router.replace('/signin')
+        return
       }
       setUser(userInfo)
+      setLoading(false)
     })
   }, [])
-
-  useEffect(() => {
-    if (user === null) {
-      router.replace('/signin')
-    }
-    if (user) {
-      setLoading(false)
-    }
-  }, [user])
 
   if (loading) {
     return <Loading />
@@ -52,7 +44,6 @@ export default function DashboardLayout() {
 
   return (
     <View style={{ flex: 1, position: 'relative' }}>
-      {!isConnected && <NoNetInfoComponent />}
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: Colors.tint,
