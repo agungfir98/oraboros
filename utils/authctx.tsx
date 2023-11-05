@@ -3,11 +3,20 @@ import {
   User,
   statusCodes,
 } from '@react-native-google-signin/google-signin'
-import { ReactNode, createContext, useContext, useState } from 'react'
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
 import AuthError from './authError'
 import { router } from 'expo-router'
 import db from '../db'
 import { Alert } from 'react-native'
+import auth from '@react-native-firebase/auth'
+import { useConnectionContext } from './connectionProvider'
+import NoNetInfoComponent from '../components/netInfoNotifier'
 
 const AuthContext = createContext<{
   signIn: {
@@ -30,6 +39,7 @@ export function useSession() {
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [signInLoading, setSignInLoading] = useState(false)
+  const { isConnected } = useConnectionContext()
 
   const signIn = {
     loading: signInLoading,
@@ -39,7 +49,12 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       await GoogleSignin.hasPlayServices()
 
       return GoogleSignin.signIn()
-        .then((user) => {
+        .then(async (user) => {
+          const googleCredentials = auth.GoogleAuthProvider.credential(
+            user.idToken,
+          )
+          auth().signInWithCredential(googleCredentials)
+
           return db.user.getUser().then((snapshot) => {
             if (!snapshot.docs.length) {
               return db.user.createUser(user.user)
@@ -60,10 +75,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         })
     },
   }
-
-  GoogleSignin.configure({
-    offlineAccess: false,
-  })
 
   return (
     <AuthContext.Provider
@@ -98,6 +109,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         },
       }}
     >
+      {!isConnected && <NoNetInfoComponent />}
       {children}
     </AuthContext.Provider>
   )
