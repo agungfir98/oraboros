@@ -2,7 +2,6 @@ import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore'
 import user from '../user'
 import { TransactionType } from '../../types/transactionType'
 import moment from 'moment'
-import { router } from 'expo-router'
 
 const getUserDB = async (): Promise<
   FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>
@@ -54,7 +53,7 @@ const getUserTransactions = async ({
 
 const getLastMonthExpense = async (): Promise<number | undefined> => {
   return getUserDB().then((snapshot) => {
-    snapshot.docs[0].ref
+    return snapshot.docs[0].ref
       .collection('transactions')
       .where(
         'date',
