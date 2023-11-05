@@ -7,7 +7,6 @@ const getUser = async (): Promise<
   FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>
 > => {
   return GoogleSignin.getCurrentUser().then((user) => {
-    console.log('userrrrrrr ')
     if (user !== null) {
       return firestore()
         .collection('Users')
