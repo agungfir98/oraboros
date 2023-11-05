@@ -26,7 +26,7 @@ export const useConnectionContext = () => {
 const ConnectionProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [isConnected, setIsConnected] = useState<boolean | null>(null)
+  const [isConnected, setIsConnected] = useState<boolean | null>(true)
   useEffect(() => {
     const unsubs = NetInfo.addEventListener((state) => {
       setIsConnected(state.isConnected)
