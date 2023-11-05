@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "458130435107-rjprvi1qk7o06098dje5c81flqslcpr0.apps.googleusercontent.com",
+          "client_id": "458130435107-om08jmj3al3bqt0l47s3ibnfc9ci0gqp.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.agungdev.oraboros",
-            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+            "certificate_hash": "4731496149ce4355827a82808730bc183868c783"
           }
         },
         {
