@@ -22,7 +22,7 @@ export default function Index() {
       start: moment().startOf('month').toDate(),
       end: moment().endOf('month').toDate(),
     },
-    limit: 8,
+    limit: 7,
     orderBy: 'desc',
   })
   const [lastMonthExpense, setLastMonthExpense] = useState<number>(0)
@@ -32,16 +32,22 @@ export default function Index() {
     db.transaction
       .getUserTransactions(queryParams)
       .then((transaction) => {
-        const finalData: TransactionType[] = []
-        transaction.forEach((value) => {
-          const data = value.data() as TransactionFirestoreType
-          finalData.push({
-            ...data,
-            date: moment(data.date.seconds * 1000).toDate(),
-          } as TransactionType)
-        })
-
-        setTransactionHistory(finalData)
+        transaction.onSnapshot(
+          (documentSnapshot) => {
+            const finalData: TransactionType[] = []
+            documentSnapshot.forEach((value) => {
+              const data = value.data() as TransactionFirestoreType
+              finalData.push({
+                ...data,
+                date: moment(data.date.seconds * 1000).toDate(),
+              } as TransactionType)
+            })
+            setTransactionHistory(finalData)
+          },
+          (err) => {
+            console.log('uerror', err)
+          },
+        )
       })
       .catch(() => {
         return
