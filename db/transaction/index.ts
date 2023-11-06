@@ -51,6 +51,7 @@ const getUserTransactions = async ({
         dateRange ? dateRange.end : moment().endOf('month').toDate(),
       )
       .orderBy('date', orderBy ? orderBy : 'desc')
+      .limit(limit ? limit : 10)
       .get()
   })
 }
