@@ -8,11 +8,10 @@ import { useEffect, useState } from 'react'
 import db from '../../db'
 import { TransactionType } from '../../types/transactionType'
 import moment from 'moment'
-import { TransactionQueryParams } from '../../db/transaction'
-
-interface TransactionFirestoreType extends TransactionType {
-  date: { nanoseconds: number; seconds: number }
-}
+import {
+  TransactionFirestoreType,
+  TransactionQueryParams,
+} from '../../db/transaction'
 
 export default function Index() {
   const [transactionHistory, setTransactionHistory] = useState<
@@ -117,7 +116,7 @@ export default function Index() {
               Recent monthly transaction
             </Text>
             <Link
-              href={'/profile'}
+              href={'/transactions/transactionHistory'}
               style={{ fontWeight: '500', color: Colors.link }}
             >
               <Text>See All</Text>

@@ -17,6 +17,10 @@ const getUserDB = async (): Promise<
   >
 }
 
+export interface TransactionFirestoreType extends TransactionType {
+  date: { nanoseconds: number; seconds: number }
+}
+
 export interface TransactionQueryParams {
   limit?: number
   orderBy?: 'asc' | 'desc'
