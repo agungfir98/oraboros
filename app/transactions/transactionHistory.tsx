@@ -9,6 +9,7 @@ import {
 import ItemList from '../../components/listItem'
 import { TransactionType } from '../../types/transactionType'
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons'
+import { ScrollView } from 'react-native-gesture-handler'
 
 const TransactionHistory = () => {
   const [queryParams, setQueryParams] = useState<TransactionQueryParams>({
@@ -17,26 +18,39 @@ const TransactionHistory = () => {
       end: moment().endOf('year').toDate(),
     },
     orderBy: 'desc',
+    limit: 20,
   })
   const [data, setData] = useState<TransactionType[]>([])
 
   useEffect(() => {
-    db.transaction.getUserTransactions(queryParams).then((transaction) => {
-      console.log('history', transaction)
-      const finalData: TransactionType[] = []
-      transaction.forEach((value) => {
-        const data = value.data() as TransactionFirestoreType
-        finalData.push({
-          ...data,
-          date: moment(data.date.seconds * 1000).toDate(),
-        } as TransactionType)
+    db.transaction
+      .getUserTransactions(queryParams)
+      .then((transaction) => {
+        transaction.onSnapshot(
+          (documentSnapshot) => {
+            const finalData: TransactionType[] = []
+            documentSnapshot.forEach((value) => {
+              const data = value.data() as TransactionFirestoreType
+              finalData.push({
+                ...data,
+                date: moment(data.date.seconds * 1000).toDate(),
+              } as TransactionType)
+            })
+
+            setData(finalData)
+          },
+          (err) => {
+            console.log('snapshot err', err)
+          },
+        )
       })
-      setData(finalData)
-    })
+      .catch((err) => {
+        console.log(err)
+      })
   }, [queryParams])
 
   return (
-    <View>
+    <ScrollView>
       <View
         style={{
           marginTop: 20,
@@ -76,7 +90,7 @@ const TransactionHistory = () => {
       <View style={[styles.listContiner]}>
         <ItemList data={data} />
       </View>
-    </View>
+    </ScrollView>
   )
 }
 
@@ -85,6 +99,7 @@ export default TransactionHistory
 const styles = StyleSheet.create({
   listContiner: {
     paddingHorizontal: 20,
+    marginBottom: 50,
   },
   tabs: {
     borderWidth: 1,
