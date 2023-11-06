@@ -35,25 +35,24 @@ const getUserTransactions = async ({
   limit,
   dateRange,
 }: TransactionQueryParams): Promise<
-  FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>
+  FirebaseFirestoreTypes.Query<FirebaseFirestoreTypes.DocumentData>
 > => {
-  return getUserDB().then((snapshot) => {
-    return snapshot.docs[0].ref
-      .collection('transactions')
-      .where(
-        'date',
-        '>',
-        dateRange ? dateRange.start : moment().startOf('month').toDate(),
-      )
-      .where(
-        'date',
-        '<',
-        dateRange ? dateRange.end : moment().endOf('month').toDate(),
-      )
-      .orderBy('date', orderBy ? orderBy : 'desc')
-      .limit(limit ? limit : 10)
-      .get()
-  })
+  const userDB = await getUserDB()
+
+  return userDB.docs[0].ref
+    .collection('transactions')
+    .where(
+      'date',
+      '>',
+      dateRange ? dateRange.start : moment().startOf('month').toDate(),
+    )
+    .where(
+      'date',
+      '<',
+      dateRange ? dateRange.end : moment().endOf('month').toDate(),
+    )
+    .orderBy('date', orderBy ? orderBy : 'desc')
+    .limit(limit ? limit : 10)
 }
 
 const getLastMonthExpense = async (): Promise<number | undefined> => {
