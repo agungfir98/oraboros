@@ -12,6 +12,7 @@ const ItemList: React.FC<{
   return (
     <FlatList
       data={data.slice(0, limit)}
+      scrollEnabled={false}
       renderItem={({ index, item }) => (
         <View
           key={index}
