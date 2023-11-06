@@ -24,7 +24,7 @@ jobs:
           cache: yarn
 
       - name: Setup Eas
-        uses: expo/expo-github-actions@v8
+        uses: expo/expo-github-action@v8
         with:
           eas-version: latest
           token: ${{secrets.EAS_PREVIEW_SECRET_TOKEN}}
