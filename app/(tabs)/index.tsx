@@ -8,11 +8,10 @@ import { useEffect, useState } from 'react'
 import db from '../../db'
 import { TransactionType } from '../../types/transactionType'
 import moment from 'moment'
-import { TransactionQueryParams } from '../../db/transaction'
-
-interface TransactionFirestoreType extends TransactionType {
-  date: { nanoseconds: number; seconds: number }
-}
+import {
+  TransactionFirestoreType,
+  TransactionQueryParams,
+} from '../../db/transaction'
 
 export default function Index() {
   const [transactionHistory, setTransactionHistory] = useState<
@@ -23,7 +22,7 @@ export default function Index() {
       start: moment().startOf('month').toDate(),
       end: moment().endOf('month').toDate(),
     },
-    limit: 8,
+    limit: 7,
     orderBy: 'desc',
   })
   const [lastMonthExpense, setLastMonthExpense] = useState<number>(0)
@@ -33,16 +32,22 @@ export default function Index() {
     db.transaction
       .getUserTransactions(queryParams)
       .then((transaction) => {
-        const finalData: TransactionType[] = []
-        transaction.forEach((value) => {
-          const data = value.data() as TransactionFirestoreType
-          finalData.push({
-            ...data,
-            date: moment(data.date.seconds * 1000).toDate(),
-          } as TransactionType)
-        })
-
-        setTransactionHistory(finalData)
+        transaction.onSnapshot(
+          (documentSnapshot) => {
+            const finalData: TransactionType[] = []
+            documentSnapshot.forEach((value) => {
+              const data = value.data() as TransactionFirestoreType
+              finalData.push({
+                ...data,
+                date: moment(data.date.seconds * 1000).toDate(),
+              } as TransactionType)
+            })
+            setTransactionHistory(finalData)
+          },
+          (err) => {
+            console.log('uerror', err)
+          },
+        )
       })
       .catch(() => {
         return
@@ -117,7 +122,7 @@ export default function Index() {
               Recent monthly transaction
             </Text>
             <Link
-              href={'/profile'}
+              href={'/transactions/transactionHistory'}
               style={{ fontWeight: '500', color: Colors.link }}
             >
               <Text>See All</Text>

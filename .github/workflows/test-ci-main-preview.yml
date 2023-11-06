@@ -1,0 +1,35 @@
+name: Oraboros CI testing preview main branch
+
+on:
+  push:
+    branches: main
+  pull_request:
+    branches: main
+
+jobs:
+  build-android-preview:
+    runs-on: ubuntu-latest
+    name: eas preview build
+    steps:
+      - name: check for token
+        run: |
+          if [ -z "${{ secrets.EAS_PREVIEW_SECRET_TOKEN}}"]; then 
+          echo "there is no expo token found, link expo token secret to this project. Learn more: https://docs.expo.dev/eas-update/github-actions"
+          exit 1
+          fi
+      - name: Checkout for repository
+        uses: actions/checkout@v2
+        with:
+          node-version: 18.x
+          cache: yarn
+
+      - name: Setup Eas
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{secrets.EAS_PREVIEW_SECRET_TOKEN}}
+      - name: install dependency
+        run: yarn install
+
+      - name: build the preview
+        run: eas build --platform android --profile preview --non-interactive --clear-cache
