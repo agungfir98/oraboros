@@ -24,10 +24,6 @@ const NewTransaction = () => {
   const priceRef = useRef<TextInput>(null)
   const qtyRef = useRef<TextInput>(null)
 
-  NetInfo.addEventListener((state) => {
-    console.log('internet aman? ', state.isConnected)
-  })
-
   const [loading, setLoading] = useState<boolean>(false)
   const [openDatePicker, setOpenDetPicker] = useState<boolean>(false)
   const [formData, setFormData] = useState<TransactionType>({
@@ -98,9 +94,8 @@ const NewTransaction = () => {
                 defaultValue="1"
                 value={formData.quantity.toString()}
                 onChangeText={(value) => {
-                  console.log(value)
-                  if (parseInt(value) > 1) {
-                    return
+                  if (parseInt(value) <= 0) {
+                    setFormData((prev) => ({ ...prev, quantity: 1 }))
                   }
                   setFormData((prev) => ({ ...prev, quantity: Number(value) }))
                 }}
@@ -129,7 +124,6 @@ const NewTransaction = () => {
                 placeholder={'0'}
                 value={formData.price.toString()}
                 onChangeText={(value) => {
-                  console.log(value)
                   setFormData((prev) => ({ ...prev, price: Number(value) }))
                 }}
                 maxLength={9}
