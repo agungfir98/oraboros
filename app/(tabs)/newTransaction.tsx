@@ -16,7 +16,6 @@ import moment from 'moment'
 import { TransactionType, category } from '../../types/transactionType'
 import db from '../../db'
 import Loading from '../../components/loading'
-import NetInfo from '@react-native-community/netinfo'
 
 StatusBar.setBarStyle('dark-content')
 const NewTransaction = () => {
