@@ -154,6 +154,16 @@ export default function DashboardLayout() {
           }}
         />
         <Tabs.Screen
+          name="budgets"
+          options={{
+            headerShown: false,
+            title: 'budget',
+            tabBarIcon: ({ color }) => (
+              <TabBarIcon name="list-alt" color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
           name="profile"
           options={{
             headerShown: false,
