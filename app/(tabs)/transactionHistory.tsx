@@ -88,7 +88,7 @@ const TransactionHistory = () => {
         }}
       />
       <View style={[styles.listContiner]}>
-        <ItemList data={data} />
+        <ItemList data={data} style={[{ marginBottom: 100 }]} />
       </View>
     </ScrollView>
   )
@@ -99,7 +99,6 @@ export default TransactionHistory
 const styles = StyleSheet.create({
   listContiner: {
     paddingHorizontal: 20,
-    marginBottom: 50,
   },
   tabs: {
     borderWidth: 1,

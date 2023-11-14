@@ -15,7 +15,7 @@ function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name']
   color: string
 }) {
-  return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />
+  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />
 }
 
 export default function DashboardLayout() {
@@ -62,20 +62,41 @@ export default function DashboardLayout() {
             borderRadius: 20,
             elevation: 10,
           },
+          tabBarShowLabel: true,
         }}
       >
         <Tabs.Screen
           name="index"
           options={{
             headerShown: false,
-            tabBarShowLabel: false,
+            tabBarLabel: 'home',
             tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          }}
+        />
+        <Tabs.Screen
+          name="transactionHistory"
+          options={{
+            tabBarLabel: 'history',
+            tabBarIcon: ({ color }) => (
+              <TabBarIcon name="history" color={color} />
+            ),
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+              color: 'white',
+            },
+            headerStyle: {
+              backgroundColor: Colors.background,
+            },
           }}
         />
         <Tabs.Screen
           name="newTransaction"
           options={{
             headerTitle: 'New Transaction',
+            tabBarLabel: '',
+            tabBarLabelStyle: {
+              position: 'absolute',
+            },
             headerTitleStyle: {
               color: 'white',
               alignSelf: 'center',
@@ -111,13 +132,12 @@ export default function DashboardLayout() {
               borderBottomStartRadius: 20,
               borderBottomEndRadius: 20,
             },
-            tabBarShowLabel: false,
             tabBarItemStyle: {
               position: 'fixed',
-              top: -35,
+              top: -30,
               alignItems: 'center',
-              minHeight: 70,
-              maxWidth: 70,
+              minHeight: 60,
+              maxWidth: 60,
               backgroundColor: 'white',
               borderRadius: 50,
               elevation: 5,
@@ -137,13 +157,12 @@ export default function DashboardLayout() {
           name="profile"
           options={{
             headerShown: false,
-            tabBarShowLabel: false,
             tabBarIcon: ({ color }) =>
               user?.user.photo ? (
                 <Image
                   source={{ uri: user.user.photo }}
-                  width={35}
-                  height={35}
+                  width={30}
+                  height={30}
                   style={{ borderRadius: 50 }}
                 />
               ) : (
