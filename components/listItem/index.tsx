@@ -1,17 +1,20 @@
-import { View, Text } from 'react-native'
+import { View, Text, StyleProp } from 'react-native'
 import React from 'react'
 import Colors from '../../constants/Colors'
 import { FlatList } from 'react-native-gesture-handler'
 import moment from 'moment'
 import { TransactionType } from '../../types/transactionType'
+import { ViewStyle } from 'react-native/Libraries/StyleSheet/StyleSheetTypes'
 
 const ItemList: React.FC<{
   data: TransactionType[]
   limit?: number
-}> = ({ data, limit }) => {
+  style?: StyleProp<ViewStyle>
+}> = ({ data, limit, style }) => {
   return (
     <FlatList
       data={data.slice(0, limit)}
+      style={[style]}
       scrollEnabled={false}
       renderItem={({ index, item }) => (
         <View
