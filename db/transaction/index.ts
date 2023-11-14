@@ -32,7 +32,6 @@ export interface TransactionQueryParams {
 
 const getUserTransactions = async ({
   orderBy,
-  limit,
   dateRange,
 }: TransactionQueryParams): Promise<
   FirebaseFirestoreTypes.Query<FirebaseFirestoreTypes.DocumentData>
@@ -52,31 +51,16 @@ const getUserTransactions = async ({
       dateRange ? dateRange.end : moment().endOf('month').toDate(),
     )
     .orderBy('date', orderBy ? orderBy : 'desc')
-    .limit(limit ? limit : 10)
 }
 
-const getLastMonthExpense = async (): Promise<number | undefined> => {
-  return getUserDB().then((snapshot) => {
-    return snapshot.docs[0].ref
-      .collection('transactions')
-      .where(
-        'date',
-        '>',
-        moment().subtract(1, 'month').startOf('month').toDate(),
-      )
-      .where('date', '<', moment().subtract(1, 'month').endOf('month').toDate())
-      .get()
-      .then((res) => {
-        const finalData: TransactionType[] = []
-        if (!res.docs.length) {
-          return undefined
-        }
-        res.forEach((v) => {
-          finalData.push(v.data() as TransactionType)
-        })
-        return finalData.reduce((pv, cv) => pv + cv.price, 0)
-      })
-  }) as Promise<number | undefined>
+const getLastMonthExpense = async (): Promise<
+  FirebaseFirestoreTypes.Query<FirebaseFirestoreTypes.DocumentData>
+> => {
+  const userDB = await getUserDB()
+  return userDB.docs[0].ref
+    .collection('transactions')
+    .where('date', '>', moment().subtract(1, 'month').startOf('month').toDate())
+    .where('date', '<', moment().subtract(1, 'month').endOf('month').toDate())
 }
 
 const createTransaction = async (data: TransactionType) => {
