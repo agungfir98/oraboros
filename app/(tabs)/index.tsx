@@ -22,7 +22,6 @@ export default function Index() {
       start: moment().startOf('month').toDate(),
       end: moment().endOf('month').toDate(),
     },
-    limit: 7,
     orderBy: 'desc',
   })
   const [lastMonthExpense, setLastMonthExpense] = useState<number>(0)
@@ -57,9 +56,20 @@ export default function Index() {
   useEffect(() => {
     db.transaction
       .getLastMonthExpense()
-      .then((value) => {
-        if (value) setLastMonthExpense(value)
-      })
+      .then(
+        (transaction) => {
+          transaction.onSnapshot((documentSnapshot) => {
+            const finalData: TransactionType[] = []
+            documentSnapshot.forEach((value) => {
+              finalData.push(value.data() as TransactionFirestoreType)
+            })
+            setLastMonthExpense(finalData.reduce((pv, cv) => pv + cv.price, 0))
+          })
+        },
+        (err) => {
+          console.error(err)
+        },
+      )
       .catch(() => {
         return
       })
@@ -67,14 +77,16 @@ export default function Index() {
 
   useEffect(() => {
     if (lastMonthExpense) {
-      const percent =
-        (transactionHistory.reduce((pv, cv) => pv + cv.price, 0) /
-          lastMonthExpense -
-          1) *
-        100
-      setPercentExpenses(parseFloat(percent.toFixed(2)))
+      if (transactionHistory.length) {
+        const percent =
+          (transactionHistory.reduce((pv, cv) => pv + cv.price, 0) /
+            lastMonthExpense -
+            1) *
+          100
+        setPercentExpenses(parseFloat(percent.toFixed(2)))
+      }
     }
-  }, [lastMonthExpense])
+  }, [lastMonthExpense, transactionHistory])
 
   return (
     <View style={[styles.container]}>
@@ -103,8 +115,8 @@ export default function Index() {
               color={'white'}
             />
             <Text style={{ color: 'white' }}>
-              {percentExpenses}% {percentExpenses > 0 ? 'more' : 'less'} than
-              last month
+              {Math.abs(percentExpenses)}%{' '}
+              {percentExpenses > 0 ? 'more' : 'less'} than last month
             </Text>
           </View>
         )}
@@ -128,7 +140,7 @@ export default function Index() {
               <Text>See All</Text>
             </Link>
           </View>
-          <ItemList data={transactionHistory} />
+          <ItemList data={transactionHistory.slice(0, 7)} />
         </View>
       </View>
     </View>
