@@ -134,7 +134,7 @@ export default function Index() {
               Recent monthly transaction
             </Text>
             <Link
-              href={'/transactions/transactionHistory'}
+              href={'/(tabs)/transactionHistory'}
               style={{ fontWeight: '500', color: Colors.link }}
             >
               <Text>See All</Text>
