@@ -26,7 +26,7 @@ const NewTransaction = () => {
   const [loading, setLoading] = useState<boolean>(false)
   const [openDatePicker, setOpenDetPicker] = useState<boolean>(false)
   const [formData, setFormData] = useState<TransactionType>({
-    date: moment(new Date()).toDate(),
+    date: moment().toDate(),
     quantity: 1,
     itemName: '',
     category: 'etc',
