@@ -156,11 +156,18 @@ export default function DashboardLayout() {
         <Tabs.Screen
           name="budgets"
           options={{
-            headerShown: false,
             title: 'budget',
             tabBarIcon: ({ color }) => (
               <TabBarIcon name="list-alt" color={color} />
             ),
+            headerShown: false,
+            headerStyle: {
+              backgroundColor: Colors.background,
+            },
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+              color: 'white',
+            },
           }}
         />
         <Tabs.Screen
